@@ -39,7 +39,7 @@ const Login = () => {
       toast.success('Signin Successful')
       navigate(from, { replace: true })
     } catch (err) {
-      console.log(err)
+      console.log(err.code)
       toast.error(err?.message)
     }
   }
