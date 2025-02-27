@@ -3,18 +3,57 @@ import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../providers/AuthProvider'
 import { format } from 'date-fns'
+import toast from 'react-hot-toast'
 
 const MyPostedJobs = () => {
   const { user } = useContext(AuthContext)
   const [jobs, setJobs] = useState([])
 
   useEffect(() => {
-    const fetchAllJobs = async () => {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/jobs/${user?.email}`)
-      setJobs(data)
-    }
     fetchAllJobs()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.email])
+
+  const fetchAllJobs = async () => {
+    const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/jobs/${user?.email}`)
+    setJobs(data)
+  }
+
+  const handleDelete = async id => {
+    try {
+      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/job/${id}`)
+      console.log(data)
+      toast.success('deleted!!')
+      fetchAllJobs()
+    } catch (err) {
+      console.log(err)
+      toast.error('NOt deleteted')
+    }
+  }
+
+  const modernDelete = (id) => {
+    toast(
+      (t) => (
+        <div className='flex gap-3 items-center'>
+          <div>
+            Are you <b>sure</b>?
+          </div>
+          <div className='space-x-3'>
+            <button onClick={() => {
+              toast.dismiss(t.id)
+              handleDelete(id)
+            }}
+              className='btn bg-red-500 text-white'>
+              Yes</button>
+            <button onClick={() => toast.dismiss(t.id)}
+             className='btn '>Cancel</button>
+          </div>
+
+        </div>
+      ),
+
+    );
+  }
 
   return (
     <section className='container px-4 mx-auto pt-12'>
@@ -105,7 +144,7 @@ const MyPostedJobs = () => {
                         </td>
                         <td className='px-4 py-4 text-sm whitespace-nowrap'>
                           <div className='flex items-center gap-x-6'>
-                            <button className='text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none'>
+                            <button onClick={() => modernDelete(job._id)} className='text-gray-500 transition-colors duration-200   hover:text-red-500 focus:outline-none'>
                               <svg
                                 xmlns='http://www.w3.org/2000/svg'
                                 fill='none'
