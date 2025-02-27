@@ -1,8 +1,8 @@
+import axios from 'axios'
 import { useContext, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { AuthContext } from '../providers/AuthProvider'
-import axios from 'axios'
 
 const AddJob = () => {
   const { user } = useContext(AuthContext)
@@ -18,6 +18,7 @@ const AddJob = () => {
     const min_price = parseFloat(form.min_price.value)
     const max_price = parseFloat(form.max_price.value)
     const description = form.description.value
+
     const formData = {
       title,
       buyer: {
